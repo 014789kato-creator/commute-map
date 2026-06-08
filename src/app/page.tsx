@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import Map, {
   Source,
@@ -28,6 +28,28 @@ export default function Home() {
 
 const mapRef = useRef<MapRef>(null);
 
+const [isMobile, setIsMobile] =
+  useState(false);
+
+useEffect(() => {
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+
+  checkMobile();
+
+  window.addEventListener(
+    "resize",
+    checkMobile
+  );
+
+  return () =>
+    window.removeEventListener(
+      "resize",
+      checkMobile
+    );
+}, []);
+
 const [isochroneA, setIsochroneA] =
   useState<any>(null);
 
@@ -43,8 +65,7 @@ const [minutes, setMinutes] =
 const [useHighway, setUseHighway] =
   useState(false);
 
-const [searchText, setSearchText] =
-  useState("");
+
 
 const [locationA, setLocationA] =
   useState<{
@@ -65,7 +86,8 @@ const [activePin, setActivePin] =
 const [areaName, setAreaName] =
   useState("");
 
-
+  const [panelOpen, setPanelOpen] =
+  useState(true);
 
 /* =========================================================
    BLOCK B-2 : traffic multiplier
@@ -138,65 +160,7 @@ const [areaName, setAreaName] =
 
 
 
-/* =========================================================
-   BLOCK D : address search
-========================================================= */
 
-  async function searchAddress() {
-
-    if (!searchText) return;
-
-    setLoading(true);
-
-    try {
-
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          searchText
-        )}.json?access_token=${
-          process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-        }&language=ja&country=jp&types=address,place,locality,neighborhood&limit=1`
-      );
-
-      if (!response.ok) {
-        throw new Error("Geocoding Error");
-      }
-
-      const data = await response.json();
-
-      if (!data.features || data.features.length === 0) {
-        alert("住所が見つかりませんでした");
-        return;
-      }
-
-      const [lng, lat] = data.features[0].center;
-
-      // A/Bで分岐
-      if (activePin === "A") {
-        setLocationA({ lng, lat });
-      } else {
-        setLocationB({ lng, lat });
-      }
-
-      mapRef.current?.flyTo({
-        center: [lng, lat],
-        zoom: 12,
-        duration: 1500,
-      });
-
-      await drawIsochrone(lng, lat, activePin);
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("住所検索に失敗しました");
-
-    } finally {
-
-      setLoading(false);
-    }
-  }
 
 /* =========================================================
    BLOCK E : share url
@@ -486,23 +450,49 @@ async function openRealEstateSearch(
    BLOCK G : control panel
 ========================================================= */}
 
-      <div
-        style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          background: "white",
-          padding: "16px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-          zIndex: 1,
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          minWidth: "340px",
-width: "340px",
-        }}
-      >
+<button
+  onClick={() =>
+    setPanelOpen(!panelOpen)
+  }
+  style={{
+    position: "absolute",
+    top: 20,
+    left: 20,
+    zIndex: 1000,
+    padding: "10px 14px",
+    border: "none",
+    borderRadius: "8px",
+    background: "#2563eb",
+    color: "white",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  {panelOpen ? "✕" : "☰"}
+</button>
+
+{panelOpen && (
+
+<div
+   style={{
+    position: "absolute",
+    top: 70,
+    left: 20,
+    background: "white",
+    padding: isMobile ? "8px" : "16px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    zIndex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: isMobile ? "8px" : "16px",
+
+    width: isMobile
+  ? "170px"
+  : "340px",
+    maxWidth: "calc(100vw - 20px)",
+  }}
+>
 
 {/* =========================================================
    BLOCK G-1 : pin mode
@@ -581,7 +571,9 @@ width: "340px",
 
         <div
           style={{
-            fontSize: "14px",
+            fontSize: isMobile
+  ? "11px"
+  : "14px",
             color: "#111",
             fontWeight: "bold",
             lineHeight: 1.5,
@@ -592,68 +584,6 @@ width: "340px",
           ピンはドラッグで調整可能
         </div>
 
-{/* =========================================================
-   BLOCK G-3 : address search
-========================================================= */}
-
-        <div>
-
-          <label
-            style={{
-              fontWeight: "bold",
-              color: "#111",
-            }}
-          >
-            住所ジャンプ
-          </label>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              marginTop: "8px",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="住所のみ対応"
-              value={searchText}
-
-              onChange={(e) => {
-                setSearchText(e.target.value);
-              }}
-
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  searchAddress();
-                }
-              }}
-
-              style={{
-                flex: 1,
-                padding: "8px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                color: "#111",
-              }}
-            />
-
-            <button
-              onClick={searchAddress}
-              style={{
-                padding: "8px 12px",
-                border: "none",
-                borderRadius: "6px",
-                background: "#2563eb",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              移動
-            </button>
-          </div>
-        </div>
 
 {/* =========================================================
    BLOCK G-4 : minutes
@@ -737,7 +667,13 @@ width: "340px",
         <button
           onClick={copyShareUrl}
           style={{
-            padding: "10px",
+            padding: isMobile
+  ? "5px"
+  : "10px",
+
+fontSize: isMobile
+  ? "12px"
+  : "16px",
             border: "none",
             borderRadius: "6px",
             background: "#10b981",
@@ -762,14 +698,20 @@ width: "340px",
             setLocationA(null);
             setLocationB(null);
 
-            setSearchText("");
+            
 
             setAreaName("");
 
           }}
 
           style={{
-            padding: "10px",
+            padding: isMobile
+  ? "5px"
+  : "10px",
+
+fontSize: isMobile
+  ? "12px"
+  : "16px",
             border: "none",
             borderRadius: "6px",
             background: "#ef4444",
@@ -907,7 +849,7 @@ width: "340px",
           </div>
         )}
       </div>
-
+)}
     
 {/* =========================================================
    BLOCK H : loading
