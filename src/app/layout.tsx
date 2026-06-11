@@ -4,7 +4,7 @@ import "./globals.css";
 
 import Script from "next/script";
 import { GA_MEASUREMENT_ID }
-  from "@/lib/analytics";
+  from "@/analytics";
 
 
 const geistSans = Geist({
