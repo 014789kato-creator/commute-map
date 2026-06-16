@@ -89,6 +89,11 @@ const [areaName, setAreaName] =
   const [panelOpen, setPanelOpen] =
   useState(true);
 
+  const [infoOpen, setInfoOpen] =
+  useState(false);
+
+
+
 /* =========================================================
    BLOCK B-2 : traffic multiplier
 ========================================================= */
@@ -446,6 +451,181 @@ async function openRealEstateSearch(
         )}
       </Map>
 
+
+
+      <button
+  onClick={() =>
+    setInfoOpen(!infoOpen)
+  }
+  style={{
+    position: "absolute",
+    top: 20,
+    right: 20,
+    zIndex: 1000,
+    width: isMobile ? "42px" : "48px",
+    height: isMobile ? "42px" : "48px",
+    border: "none",
+    borderRadius: "50%",
+    background: "#1f2937",
+    color: "white",
+    fontSize: "22px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    boxShadow:
+      "0 2px 8px rgba(0,0,0,0.3)",
+  }}
+>
+  {infoOpen ? "✕" : "ⓘ"}
+</button>
+
+{infoOpen && (
+  <div
+    style={{
+      position: "absolute",
+      top: 70,
+      right: 20,
+      width: isMobile ? "220px" : "320px",
+      maxHeight: "80vh",
+      overflowY: "auto",
+      background: "white",
+      padding: "16px",
+      borderRadius: "8px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+      zIndex: 999,
+      lineHeight: 1.7,
+color: "#111827",
+    }}
+  >
+
+<h3
+  style={{
+    marginTop: 0,
+    marginBottom: "12px",
+    fontSize: "20px",
+    fontWeight: "bold",
+    color: "#111827",
+  }}
+>
+  このサイトについて
+</h3>
+
+<div
+  style={{
+    background: "#f3f4f6",
+    padding: "12px",
+    borderRadius: "8px",
+    marginBottom: "16px",
+  }}
+>
+  <p style={{ marginTop: 0 }}>
+    自身が設定した通勤時間でどこまで到達できるかを
+    地図上に表示するサービスです。
+  </p>
+
+  <p>
+    勤務地や駅を指定すると、
+    その場所から設定時間以内で
+    到達できる範囲を可視化できます。
+  </p>
+
+  <p style={{ marginBottom: 0 }}>
+    通勤30分以内で住める場所探しや、
+    夫婦それぞれの勤務地に通いやすい
+    エリア探しに活用できます。
+  </p>
+</div>
+
+<h3
+  style={{
+    marginBottom: "12px",
+  }}
+>
+  活用例
+</h3>
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "20px",
+  }}
+>
+  <div>🏠 通勤30分以内で住めるエリアを探す</div>
+  <div>👫 夫婦の勤務地の中間地点を探す</div>
+  <div>🚚 転勤先で住居候補を検討する</div>
+  <div>📦 引越し前に通勤負担を比較する</div>
+  <div>🏡 住宅購入前に通勤圏を確認する</div>
+</div>
+
+<details>
+  <summary
+    style={{
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    プライバシーポリシー
+  </summary>
+
+  <p>
+    当サイトでは、サービス改善および
+    利用状況の分析のため、
+    Google Analyticsを利用しています。
+  </p>
+
+  <p>
+    Google AnalyticsはCookieを利用して
+    利用状況を収集します。
+    収集される情報は匿名であり、
+    個人を特定するものではありません。
+  </p>
+
+  <p>
+    ユーザーはブラウザ設定により
+    Cookieを無効化することができます。
+  </p>
+
+  <p>
+    当サイトでは今後、
+    アフィリエイト広告や
+    第三者配信広告を掲載する場合があります。
+  </p>
+
+  <p>
+    その際、広告配信事業者が
+    Cookie等を利用して
+    ユーザーの興味に応じた広告を
+    配信する場合があります。
+  </p>
+
+  <p>
+    お問い合わせは下記メールアドレスまで
+    ご連絡ください。
+  </p>
+
+  <p>
+    （問い合わせ先を後で記載）
+  </p>
+</details>
+<div
+  style={{
+    marginTop: "20px",
+  }}
+>
+  <a
+    href="/contact"
+    style={{
+      color: "#2563eb",
+      fontWeight: "bold",
+      textDecoration: "none",
+    }}
+  >
+    お問い合わせはこちら
+  </a>
+</div>
+  </div>
+)}
 {/* =========================================================
    BLOCK G : control panel
 ========================================================= */}
