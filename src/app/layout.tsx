@@ -22,7 +22,11 @@ export const metadata: Metadata = {
     "通勤圏マップ｜通勤時間から住めるエリアを可視化",
   description:
     "勤務地や駅から設定した通勤時間で到達できる範囲を地図上に表示。住まい探しや引越し検討に活用できます。",
-};
+    verification: {
+      google: "ZoVWK-OtEJg4YgaAKaTqyyAT-xu1asFLnQ_IxxTzfeg",
+    },
+
+  };
 
 export default function RootLayout({
   children,
