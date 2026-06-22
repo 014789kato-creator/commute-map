@@ -30,16 +30,21 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      "通勤圏マップ｜通勤時間から住めるエリアを可視化",
-
+    title: "通勤圏マップ｜通勤時間から住めるエリアを可視化",
+  
     description:
       "勤務地や駅から設定した通勤時間で到達できる範囲を地図上に表示。",
-
-    type: "website",
-
+  
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  
     locale: "ja_JP",
-
+    type: "website",
     siteName: "通勤圏マップ",
   },
 };
