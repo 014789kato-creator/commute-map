@@ -141,6 +141,17 @@ const [areaName, setAreaName] =
       );
 
       if (!response.ok) {
+        const errorText = await response.text();
+      
+        console.error(
+          response.status,
+          errorText
+        );
+      
+        alert(
+          `${response.status}\n${errorText}`
+        );
+      
         throw new Error("Isochrone API Error");
       }
 
